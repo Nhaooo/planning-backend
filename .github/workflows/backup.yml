@@ -1,0 +1,84 @@
+name: Database Backup
+
+on:
+  schedule:
+    # Tous les jours à 2h du matin UTC
+    - cron: '0 2 * * *'
+  workflow_dispatch: # Permet de déclencher manuellement
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.BACKUP_TOKEN }}
+
+    - name: Create backup directory
+      run: mkdir -p backups
+
+    - name: Generate timestamp
+      id: timestamp
+      run: echo "timestamp=$(date +'%Y%m%d_%H%M%S')" >> $GITHUB_OUTPUT
+
+    - name: Create database backup
+      run: |
+        curl -X POST "${{ secrets.RENDER_APP_URL }}/api/v1/backup/backup" \
+          -H "Authorization: Bearer ${{ secrets.BACKUP_SECRET }}" \
+          -H "Content-Type: application/json" \
+          -o "backups/backup_${{ steps.timestamp.outputs.timestamp }}.json" \
+          --fail --show-error --silent
+      continue-on-error: true
+
+    - name: Verify backup file
+      run: |
+        if [ -f "backups/backup_${{ steps.timestamp.outputs.timestamp }}.json" ]; then
+          echo "✅ Backup file created successfully"
+          ls -la "backups/backup_${{ steps.timestamp.outputs.timestamp }}.json"
+        else
+          echo "❌ Backup file not found"
+          exit 1
+        fi
+
+    - name: Cleanup old backups (keep last 30 days)
+      run: |
+        find backups/ -name "backup_*.json" -type f -mtime +30 -delete || true
+        echo "Cleaned up old backups"
+
+    - name: Commit and push backup
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add backups/
+        if git diff --staged --quiet; then
+          echo "No changes to commit"
+        else
+          git commit -m "Backup automatique du $(date +'%Y-%m-%d %H:%M:%S')"
+          git push
+          echo "✅ Backup committed and pushed"
+        fi
+
+    - name: Create backup summary
+      run: |
+        echo "## 📊 Backup Summary" >> $GITHUB_STEP_SUMMARY
+        echo "- **Date**: $(date)" >> $GITHUB_STEP_SUMMARY
+        echo "- **Timestamp**: ${{ steps.timestamp.outputs.timestamp }}" >> $GITHUB_STEP_SUMMARY
+        echo "- **Status**: ✅ Success" >> $GITHUB_STEP_SUMMARY
+        echo "- **Files in backup directory**: $(ls -1 backups/ | wc -l)" >> $GITHUB_STEP_SUMMARY
+
+  # Job de notification en cas d'échec
+  notify-failure:
+    if: failure()
+    runs-on: ubuntu-latest
+    needs: backup
+    
+    steps:
+    - name: Notify backup failure
+      run: |
+        echo "❌ Backup failed at $(date)"
+        echo "Please check the logs and verify:"
+        echo "1. RENDER_APP_URL is correct"
+        echo "2. BACKUP_SECRET is valid"
+        echo "3. Render app is running"
