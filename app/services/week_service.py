@@ -93,10 +93,10 @@ class WeekService:
         }
         
         vacation_mapping = {
-            'Toussaint': 1,
-            'Noel': 2,
-            'Paques': 3,
-            'Ete': 4
+            'TOUSSAINT': 1,
+            'NOEL': 2,
+            'PAQUES': 3,
+            'ETE': 4
         }
         
         # Conversion vers le format attendu par la base

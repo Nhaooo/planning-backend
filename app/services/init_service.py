@@ -44,10 +44,10 @@ class InitService:
             # Créer les VacationPeriod si nécessaire
             if existing_vacations == 0:
                 vacation_periods = [
-                    VacationPeriod(id=1, period="Toussaint"),
-                    VacationPeriod(id=2, period="Noel"),
-                    VacationPeriod(id=3, period="Paques"),
-                    VacationPeriod(id=4, period="Ete")
+                    VacationPeriod(id=1, period="TOUSSAINT"),
+                    VacationPeriod(id=2, period="NOEL"),
+                    VacationPeriod(id=3, period="PAQUES"),
+                    VacationPeriod(id=4, period="ETE")
                 ]
                 
                 for period in vacation_periods:

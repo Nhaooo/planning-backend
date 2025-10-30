@@ -59,10 +59,10 @@ def create_seed_data():
         
         # 3. Créer les périodes de vacances
         vacation_periods_data = [
-            {"period": "Toussaint"},
-            {"period": "Noel"},
-            {"period": "Paques"},
-            {"period": "Ete"},
+            {"period": "TOUSSAINT"},
+            {"period": "NOEL"},
+            {"period": "PAQUES"},
+            {"period": "ETE"},
         ]
         
         vacation_periods = []
