@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Enum
+from sqlalchemy import Column, Integer, String
 from app.database import Base
 import enum
 
@@ -14,4 +14,4 @@ class VacationPeriod(Base):
     __tablename__ = "vacation_period"
 
     id = Column(Integer, primary_key=True, index=True)
-    period = Column(Enum(VacationPeriodEnum), unique=True, nullable=False)
+    period = Column(String(50), unique=True, nullable=False)
