@@ -7,7 +7,7 @@ class SlotBase(BaseModel):
     start_min: int = Field(..., ge=0, lt=1440, description="Minutes since 00:00")
     duration_min: int = Field(..., gt=0, description="Duration in minutes, multiple of 15")
     title: str = Field(..., min_length=1, max_length=200)
-    category: str = Field(..., regex="^[apecol ms]$", description="Category code")
+    category: str = Field(..., pattern="^[apecol ms]$", description="Category code")
     comment: Optional[str] = Field(None, max_length=500)
 
     @validator('duration_min')
@@ -33,7 +33,7 @@ class SlotUpdate(BaseModel):
     start_min: Optional[int] = Field(None, ge=0, lt=1440)
     duration_min: Optional[int] = Field(None, gt=0)
     title: Optional[str] = Field(None, min_length=1, max_length=200)
-    category: Optional[str] = Field(None, regex="^[apecol ms]$")
+    category: Optional[str] = Field(None, pattern="^[apecol ms]$")
     comment: Optional[str] = Field(None, max_length=500)
 
     @validator('duration_min')
