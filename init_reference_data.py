@@ -36,10 +36,10 @@ def init_reference_data():
         print("🏖️ Initialisation des périodes de vacances...")
         vacation_periods_sql = """
         INSERT INTO vacation_period (id, period) VALUES 
-        (1, 'TOUSSAINT'),
-        (2, 'NOEL'),
-        (3, 'PAQUES'),
-        (4, 'ETE')
+        (1, 'Toussaint'),
+        (2, 'Noel'),
+        (3, 'Paques'),
+        (4, 'Ete')
         ON CONFLICT (id) DO NOTHING;
         """
         

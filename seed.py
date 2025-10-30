@@ -42,10 +42,10 @@ def create_seed_data():
         
         # 2. Créer les types de semaines
         week_kinds_data = [
-            {"kind": "type"},
-            {"kind": "current"},
-            {"kind": "next"},
-            {"kind": "vacation"},
+            {"kind": WeekKindEnum.TYPE},
+            {"kind": WeekKindEnum.CURRENT},
+            {"kind": WeekKindEnum.NEXT},
+            {"kind": WeekKindEnum.VACATION},
         ]
         
         week_kinds = []
@@ -59,10 +59,10 @@ def create_seed_data():
         
         # 3. Créer les périodes de vacances
         vacation_periods_data = [
-            {"period": "TOUSSAINT"},
-            {"period": "NOEL"},
-            {"period": "PAQUES"},
-            {"period": "ETE"},
+            {"period": VacationPeriodEnum.TOUSSAINT},
+            {"period": VacationPeriodEnum.NOEL},
+            {"period": VacationPeriodEnum.PAQUES},
+            {"period": VacationPeriodEnum.ETE},
         ]
         
         vacation_periods = []

@@ -4,10 +4,10 @@ import enum
 
 
 class VacationPeriodEnum(str, enum.Enum):
-    TOUSSAINT = "TOUSSAINT"
-    NOEL = "NOEL"
-    PAQUES = "PAQUES"
-    ETE = "ETE"
+    TOUSSAINT = "Toussaint"
+    NOEL = "Noel"
+    PAQUES = "Paques"
+    ETE = "Ete"
 
 
 class VacationPeriod(Base):
