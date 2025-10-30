@@ -2,6 +2,7 @@ from sqlalchemy.orm import Session
 from app.models.week_kind import WeekKind, WeekKindEnum
 from app.models.vacation_period import VacationPeriod, VacationPeriodEnum
 from app.models.simple_slot import SimpleSlot
+from app.models.slot import Slot
 from app.database import Base, engine
 
 

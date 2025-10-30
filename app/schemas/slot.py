@@ -1,51 +1,52 @@
-from pydantic import BaseModel, Field, validator
-from typing import Optional
+from pydantic import BaseModel, Field
+from typing import Optional, List
+from datetime import date, datetime
 
 
 class SlotBase(BaseModel):
-    day_index: int = Field(..., ge=0, le=6, description="0=Monday, 6=Sunday")
-    start_min: int = Field(..., ge=0, lt=1440, description="Minutes since 00:00")
-    duration_min: int = Field(..., gt=0, description="Duration in minutes, multiple of 15")
+    employee_id: int
+    date: date
+    start_hour: int = Field(..., ge=0, le=23)
+    start_minute: int = Field(0, ge=0, le=59)
+    duration_hours: int = Field(1, ge=0, le=12)
+    duration_minutes: int = Field(0, ge=0, le=59)
     title: str = Field(..., min_length=1, max_length=200)
-    category: str = Field(..., pattern="^[apecol ms]$", description="Category code")
+    category: str = Field("a", pattern="^[apecol ms]$")
     comment: Optional[str] = Field(None, max_length=500)
-
-    @validator('duration_min')
-    def duration_must_be_multiple_of_15(cls, v):
-        if v % 15 != 0:
-            raise ValueError('Duration must be a multiple of 15 minutes')
-        return v
-
-    @validator('category')
-    def category_must_be_valid(cls, v):
-        valid_categories = {'a', 'p', 'e', 'c', 'o', 'l', 'm', 's'}
-        if v not in valid_categories:
-            raise ValueError(f'Category must be one of: {valid_categories}')
-        return v
 
 
 class SlotCreate(SlotBase):
-    week_id: int
+    pass
 
 
 class SlotUpdate(BaseModel):
-    day_index: Optional[int] = Field(None, ge=0, le=6)
-    start_min: Optional[int] = Field(None, ge=0, lt=1440)
-    duration_min: Optional[int] = Field(None, gt=0)
+    employee_id: Optional[int] = None
+    date: Optional[date] = None
+    start_hour: Optional[int] = Field(None, ge=0, le=23)
+    start_minute: Optional[int] = Field(None, ge=0, le=59)
+    duration_hours: Optional[int] = Field(None, ge=0, le=12)
+    duration_minutes: Optional[int] = Field(None, ge=0, le=59)
     title: Optional[str] = Field(None, min_length=1, max_length=200)
     category: Optional[str] = Field(None, pattern="^[apecol ms]$")
     comment: Optional[str] = Field(None, max_length=500)
 
-    @validator('duration_min')
-    def duration_must_be_multiple_of_15(cls, v):
-        if v is not None and v % 15 != 0:
-            raise ValueError('Duration must be a multiple of 15 minutes')
-        return v
-
 
 class Slot(SlotBase):
     id: int
-    week_id: int
+    created_at: datetime
+    updated_at: datetime
+    start_time_str: str
+    end_time_str: str
 
+    class Config:
+        from_attributes = True
+
+
+class WeekPlanningResponse(BaseModel):
+    """Réponse pour une semaine de planning"""
+    employee_id: int
+    week_start: date
+    slots: List[Slot]
+    
     class Config:
         from_attributes = True
