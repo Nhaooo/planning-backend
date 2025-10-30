@@ -1,6 +1,8 @@
 from sqlalchemy.orm import Session
 from app.models.week_kind import WeekKind, WeekKindEnum
 from app.models.vacation_period import VacationPeriod, VacationPeriodEnum
+from app.models.simple_slot import SimpleSlot
+from app.database import Base, engine
 
 
 class InitService:
@@ -10,11 +12,16 @@ class InitService:
         """Initialise les données de référence si elles n'existent pas"""
         
         try:
+            # Créer toutes les tables si elles n'existent pas
+            print("🏗️ Création des tables...")
+            Base.metadata.create_all(bind=engine)
+            
             # Vérifier si les données existent déjà
             existing_kinds = db.query(WeekKind).count()
             existing_vacations = db.query(VacationPeriod).count()
             
             if existing_kinds > 0 and existing_vacations > 0:
+                print("✅ Les données de référence existent déjà")
                 return  # Données déjà présentes
             
             print("🚀 Initialisation des données de référence...")
@@ -22,10 +29,10 @@ class InitService:
             # Créer les WeekKind si nécessaire
             if existing_kinds == 0:
                 week_kinds = [
-                    WeekKind(id=1, kind=WeekKindEnum.TYPE),
-                    WeekKind(id=2, kind=WeekKindEnum.CURRENT),
-                    WeekKind(id=3, kind=WeekKindEnum.NEXT),
-                    WeekKind(id=4, kind=WeekKindEnum.VACATION)
+                    WeekKind(id=1, kind="type"),
+                    WeekKind(id=2, kind="current"),
+                    WeekKind(id=3, kind="next"),
+                    WeekKind(id=4, kind="vacation")
                 ]
                 
                 for kind in week_kinds:
@@ -37,10 +44,10 @@ class InitService:
             # Créer les VacationPeriod si nécessaire
             if existing_vacations == 0:
                 vacation_periods = [
-                    VacationPeriod(id=1, period=VacationPeriodEnum.TOUSSAINT),
-                    VacationPeriod(id=2, period=VacationPeriodEnum.NOEL),
-                    VacationPeriod(id=3, period=VacationPeriodEnum.PAQUES),
-                    VacationPeriod(id=4, period=VacationPeriodEnum.ETE)
+                    VacationPeriod(id=1, period="Toussaint"),
+                    VacationPeriod(id=2, period="Noel"),
+                    VacationPeriod(id=3, period="Paques"),
+                    VacationPeriod(id=4, period="Ete")
                 ]
                 
                 for period in vacation_periods:
