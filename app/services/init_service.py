@@ -29,10 +29,10 @@ class InitService:
             # Créer les WeekKind si nécessaire
             if existing_kinds == 0:
                 week_kinds = [
-                    WeekKind(id=1, kind=WeekKindEnum.TYPE.value),
-                    WeekKind(id=2, kind=WeekKindEnum.CURRENT.value),
-                    WeekKind(id=3, kind=WeekKindEnum.NEXT.value),
-                    WeekKind(id=4, kind=WeekKindEnum.VACATION.value)
+                    WeekKind(id=1, kind="type"),
+                    WeekKind(id=2, kind="current"),
+                    WeekKind(id=3, kind="next"),
+                    WeekKind(id=4, kind="vacation")
                 ]
                 
                 for kind in week_kinds:
@@ -44,10 +44,10 @@ class InitService:
             # Créer les VacationPeriod si nécessaire
             if existing_vacations == 0:
                 vacation_periods = [
-                    VacationPeriod(id=1, period=VacationPeriodEnum.TOUSSAINT.value),
-                    VacationPeriod(id=2, period=VacationPeriodEnum.NOEL.value),
-                    VacationPeriod(id=3, period=VacationPeriodEnum.PAQUES.value),
-                    VacationPeriod(id=4, period=VacationPeriodEnum.ETE.value)
+                    VacationPeriod(id=1, period="Toussaint"),
+                    VacationPeriod(id=2, period="Noel"),
+                    VacationPeriod(id=3, period="Paques"),
+                    VacationPeriod(id=4, period="Ete")
                 ]
                 
                 for period in vacation_periods:
