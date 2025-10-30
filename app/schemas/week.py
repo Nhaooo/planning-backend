@@ -15,6 +15,15 @@ class WeekBase(BaseModel):
     meta: Dict[str, Any] = Field(default_factory=dict)
 
 
+# Nouveau schéma simplifié pour la création
+class WeekCreateSimple(BaseModel):
+    employee_id: int
+    kind: str = Field(..., description="Week kind: type|current|next|vacation")
+    vacation: Optional[str] = Field(None, description="Vacation period: Toussaint|Noel|Paques|Ete")
+    week_start_date: date = Field(..., description="Monday of the week (ISO)")
+    meta: Dict[str, Any] = Field(default_factory=dict)
+
+
 class WeekCreate(WeekBase):
     pass
 

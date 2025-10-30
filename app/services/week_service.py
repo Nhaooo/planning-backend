@@ -4,7 +4,7 @@ from datetime import date
 from app.models.week import Week
 from app.models.slot import Slot
 from app.models.note import Note
-from app.schemas.week import WeekCreate, WeekUpdate, WeekResponse
+from app.schemas.week import WeekCreate, WeekCreateSimple, WeekUpdate, WeekResponse
 from app.schemas.slot import SlotCreate, SlotUpdate
 from app.services.calculation_service import CalculationService
 
@@ -76,6 +76,42 @@ class WeekService:
     def create_week(db: Session, week_data: WeekCreate) -> Week:
         """Crée une nouvelle semaine"""
         db_week = Week(**week_data.dict())
+        db.add(db_week)
+        db.commit()
+        db.refresh(db_week)
+        return db_week
+    
+    @staticmethod
+    def create_week_simple(db: Session, week_data: WeekCreateSimple) -> Week:
+        """Crée une nouvelle semaine avec conversion automatique des strings vers IDs"""
+        # Mapping des strings vers IDs
+        kind_mapping = {
+            'type': 1,
+            'current': 2,
+            'next': 3,
+            'vacation': 4
+        }
+        
+        vacation_mapping = {
+            'Toussaint': 1,
+            'Noel': 2,
+            'Paques': 3,
+            'Ete': 4
+        }
+        
+        # Conversion vers le format attendu par la base
+        week_dict = {
+            'employee_id': week_data.employee_id,
+            'kind_id': kind_mapping.get(week_data.kind, 2),  # Default to 'current'
+            'week_start_date': week_data.week_start_date,
+            'meta': week_data.meta
+        }
+        
+        # Ajouter vacation_id si spécifié
+        if week_data.vacation and week_data.vacation in vacation_mapping:
+            week_dict['vacation_id'] = vacation_mapping[week_data.vacation]
+        
+        db_week = Week(**week_dict)
         db.add(db_week)
         db.commit()
         db.refresh(db_week)

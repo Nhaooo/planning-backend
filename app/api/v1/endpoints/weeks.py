@@ -3,7 +3,7 @@ from datetime import date
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 from app.database import get_db
-from app.schemas.week import WeekResponse, WeekCreate, WeekUpdate
+from app.schemas.week import WeekResponse, WeekCreate, WeekCreateSimple, WeekUpdate
 from app.schemas.slot import SlotCreate, SlotUpdate, Slot
 from app.services.week_service import WeekService
 
@@ -33,10 +33,10 @@ def get_week(week_id: int, db: Session = Depends(get_db)):
 
 
 @router.post("/", response_model=WeekResponse)
-def create_week(week: WeekCreate, db: Session = Depends(get_db)):
-    """Crée une nouvelle semaine"""
+def create_week(week: WeekCreateSimple, db: Session = Depends(get_db)):
+    """Crée une nouvelle semaine avec strings (simplifié)"""
     try:
-        db_week = WeekService.create_week(db, week)
+        db_week = WeekService.create_week_simple(db, week)
         return WeekService.get_week_with_details(db, db_week.id)
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
