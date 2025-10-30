@@ -3,6 +3,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
 from app.api.v1.api import api_router
 from app.config import settings
+from app.database import get_db
+from app.services.init_service import InitService
 
 app = FastAPI(
     title="Planning API",
@@ -29,6 +31,19 @@ app.add_middleware(
 
 # Inclusion des routes API
 app.include_router(api_router, prefix="/api/v1")
+
+
+@app.on_event("startup")
+async def startup_event():
+    """Initialisation au démarrage de l'application"""
+    print("🚀 Démarrage de l'application Planning API...")
+    
+    # Initialiser les données de référence
+    db = next(get_db())
+    try:
+        InitService.init_reference_data(db)
+    finally:
+        db.close()
 
 
 @app.get("/")
