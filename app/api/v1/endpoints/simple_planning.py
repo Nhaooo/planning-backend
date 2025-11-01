@@ -24,10 +24,10 @@ def get_week_planning(
 
 
 @router.post("/slots", response_model=SimpleSlot)
-def create_slot(slot: SimpleSlotCreate, db: Session = Depends(get_db)):
+def create_slot(slot: SimpleSlotCreate, exclude_id: int = Query(None), db: Session = Depends(get_db)):
     """Crée un nouveau créneau"""
     try:
-        db_slot = SimplePlanningService.create_slot(db, slot)
+        db_slot = SimplePlanningService.create_slot(db, slot, exclude_id)
         return db_slot
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))

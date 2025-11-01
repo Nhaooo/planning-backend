@@ -28,7 +28,7 @@ class SimplePlanningService:
         )
     
     @staticmethod
-    def create_slot(db: Session, slot_data: SimpleSlotCreate) -> SimpleSlot:
+    def create_slot(db: Session, slot_data: SimpleSlotCreate, exclude_id: int = None) -> SimpleSlot:
         """Crée un nouveau créneau"""
         
         # Vérifier les chevauchements
@@ -38,6 +38,10 @@ class SimplePlanningService:
         ).all()
         
         for existing in existing_slots:
+            # Ignorer le créneau qu'on est en train de déplacer
+            if exclude_id and existing.id == exclude_id:
+                continue
+                
             # Vérifier si les horaires se chevauchent
             if not (slot_data.end_time <= existing.start_time or slot_data.start_time >= existing.end_time):
                 raise ValueError(f"Chevauchement détecté avec le créneau '{existing.title}'")
