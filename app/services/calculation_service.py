@@ -18,7 +18,8 @@ class CalculationService:
             week_total += hours
             
             # Catégories considérées comme "indéterminées" (à ajuster selon les besoins)
-            if slot.category in ['m']:  # Mise en place / Rangement
+            # Accepter les anciens codes et les nouveaux noms
+            if slot.category in ['m', 'mise_en_place']:  # Mise en place / Rangement
                 indetermine += hours
         
         return WeekTotals(
@@ -31,20 +32,38 @@ class CalculationService:
     def calculate_category_repartition(slots: List[Slot]) -> CategoryRepartition:
         """Calcule la répartition par catégorie en heures"""
         repartition = {
-            'a': 0.0,  # Administratif/gestion
-            'p': 0.0,  # Prestation/événement
-            'e': 0.0,  # École d'escalade
-            'c': 0.0,  # Groupes compétition
-            'o': 0.0,  # Ouverture
-            'l': 0.0,  # Loisir
-            'm': 0.0,  # Mise en place / Rangement
-            's': 0.0,  # Santé Adulte/Enfant
+            'administratif': 0.0,  # Administratif/gestion
+            'prestation': 0.0,  # Prestation/événement
+            'ecole': 0.0,  # École d'escalade
+            'competition': 0.0,  # Groupes compétition
+            'ouverture': 0.0,  # Ouverture
+            'loisir': 0.0,  # Loisir
+            'mise_en_place': 0.0,  # Mise en place / Rangement
+            'sante': 0.0,  # Santé Adulte/Enfant
+        }
+        
+        # Mapping des anciens codes vers les nouveaux noms pour la compatibilité
+        legacy_mapping = {
+            'a': 'administratif',
+            'p': 'prestation', 
+            'e': 'ecole',
+            'c': 'competition',
+            'o': 'ouverture',
+            'l': 'loisir',
+            'm': 'mise_en_place',
+            's': 'sante'
         }
         
         for slot in slots:
             hours = slot.duration_min / 60.0
-            if slot.category in repartition:
-                repartition[slot.category] += hours
+            category = slot.category
+            
+            # Convertir les anciens codes si nécessaire
+            if category in legacy_mapping:
+                category = legacy_mapping[category]
+            
+            if category in repartition:
+                repartition[category] += hours
         
         return CategoryRepartition(**repartition)
     
@@ -74,12 +93,12 @@ class CalculationService:
     def get_category_legend() -> Dict[str, Dict[str, str]]:
         """Retourne la légende des catégories"""
         return {
-            'a': {'label': 'Administratif/gestion', 'color': '#49B675'},
-            'p': {'label': 'Prestation/événement', 'color': '#40E0D0'},
-            'e': {'label': 'École d\'escalade', 'color': '#A280FF'},
-            'c': {'label': 'Groupes compétition', 'color': '#FF007F'},
-            'o': {'label': 'Ouverture', 'color': '#FF2D2D'},
-            'l': {'label': 'Loisir', 'color': '#FFD166'},
-            'm': {'label': 'Mise en place / Rangement', 'color': '#FF9B54'},
-            's': {'label': 'Santé Adulte/Enfant', 'color': '#FF8C42'},
+            'administratif': {'label': 'Administratif/gestion', 'color': '#49B675'},
+            'prestation': {'label': 'Prestation/événement', 'color': '#40E0D0'},
+            'ecole': {'label': 'École d\'escalade', 'color': '#A280FF'},
+            'competition': {'label': 'Groupes compétition', 'color': '#FF007F'},
+            'ouverture': {'label': 'Ouverture', 'color': '#FF2D2D'},
+            'loisir': {'label': 'Loisir', 'color': '#FFD166'},
+            'mise_en_place': {'label': 'Mise en place / Rangement', 'color': '#FF9B54'},
+            'sante': {'label': 'Santé Adulte/Enfant', 'color': '#FF8C42'},
         }
