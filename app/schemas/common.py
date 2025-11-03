@@ -15,22 +15,22 @@ class WeekTotals(BaseModel):
 
 
 class CategoryRepartition(BaseModel):
-    administratif: float  # Administratif/gestion
-    prestation: float  # Prestation/événement
-    ecole: float  # École d'escalade
-    competition: float  # Groupes compétition
-    ouverture: float  # Ouverture
-    loisir: float  # Loisir
-    mise_en_place: float  # Mise en place / Rangement
-    sante: float  # Santé Adulte/Enfant
+    a: float  # Administratif/gestion
+    p: float  # Prestation/événement
+    e: float  # École d'escalade
+    c: float  # Groupes compétition
+    o: float  # Ouverture
+    l: float  # Loisir
+    m: float  # Mise en place / Rangement
+    s: float  # Santé Adulte/Enfant
 
 
 class CategoryRepartitionPercent(BaseModel):
-    administratif: float
-    prestation: float
-    ecole: float
-    competition: float
-    ouverture: float
-    loisir: float
-    mise_en_place: float
-    sante: float
+    a: float
+    p: float
+    e: float
+    c: float
+    o: float
+    l: float
+    m: float
+    s: float
